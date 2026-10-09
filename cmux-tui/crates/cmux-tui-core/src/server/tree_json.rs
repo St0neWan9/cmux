@@ -179,7 +179,7 @@ pub(super) fn pane_json(
                 // Why a dead terminal ended (R41, terminal-state-v1).
                 "end": end,
             });
-            raw_tab::merge_browser_fields(&mut tab, surface, frontend_browser, conversation);
+            raw_tab::merge_surface_fields(&mut tab, surface, frontend_browser, conversation);
             tab
         }).collect::<Vec<_>>(),
     })

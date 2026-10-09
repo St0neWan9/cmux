@@ -14,7 +14,7 @@
 namespace cmux::raw {
 
 inline constexpr std::uint32_t kMuxProtocolVersion = 12U;
-inline constexpr std::string_view kProtocolIrSha256 = "2bf19d19dd792ab6ce12fb52406a3928efe88c839b5e097d4a042d2dcc4158d4";
+inline constexpr std::string_view kProtocolIrSha256 = "fc0a40b954ed17dbf2da326a1f8220fbb133549edab5a14bc602d2d6922b16c8";
 
 struct ActivitySnapshot;
 struct ActivitySubscribeResult;
@@ -2857,6 +2857,7 @@ struct Tab {
     std::optional<Size> size{};
     std::optional<bool> supports_clear_history_key_fallback{};
     Id surface{};
+    Field<std::string> terminal_host_fallback{};
     Field<std::string> terminal_id{};
     Field<std::string> terminal_incarnation{};
     Field<std::string> terminal_resource_id{};

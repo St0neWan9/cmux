@@ -1,5 +1,5 @@
 // This file is generated. Do not edit by hand.
-// cmux-tui mux protocol 12, IR 2bf19d19dd792ab6ce12fb52406a3928efe88c839b5e097d4a042d2dcc4158d4.
+// cmux-tui mux protocol 12, IR fc0a40b954ed17dbf2da326a1f8220fbb133549edab5a14bc602d2d6922b16c8.
 // The emitter owns this layout so generation is independent of the installed rustfmt.
 
 use crate::{Nullable, Optional};
@@ -1823,6 +1823,9 @@ pub struct Tab {
     #[serde(default, deserialize_with = "crate::presence::deserialize_optional_non_null", skip_serializing_if = "Option::is_none")]
     pub supports_clear_history_key_fallback: Option<bool>,
     pub surface: Id,
+    /// Why a terminal runs in the daemon process although terminal hosts are on, so it ends with the daemon (\`breakaway_denied\`: a Windows daemon in a Job Object without breakaway). Null for a terminal with its own host and for browser tabs. A string, not an enum: clients read an unknown value as a fallback for another reason.
+    #[serde(default, skip_serializing_if = "Optional::is_missing")]
+    pub terminal_host_fallback: Optional<String>,
     #[serde(default, skip_serializing_if = "Optional::is_missing")]
     pub terminal_id: Optional<String>,
     #[serde(default, skip_serializing_if = "Optional::is_missing")]
