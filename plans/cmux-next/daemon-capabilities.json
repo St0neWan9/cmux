@@ -15,6 +15,7 @@
     "conversation-tabs-v1",
     "creation-attempt-keys-v1",
     "creation-receipts-v1",
+    "detached-terminals-v1",
     "dock-column-role-v1",
     "dock-columns-v1",
     "edge-docks-v1",
@@ -37,6 +38,7 @@
     "personal-terminals-v1",
     "profiles-v1",
     "project-list-v1",
+    "remote-terminal-tabs-v1",
     "rows-v1",
     "saved-tab-groups-v1",
     "screen-groups-v1",
@@ -82,7 +84,6 @@
     "workspace-registry-v1"
   ],
   "unservedByBundledDaemon" : [
-    "detached-terminals-v1",
-    "remote-terminal-tabs-v1"
+
   ]
 }
