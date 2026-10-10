@@ -56,7 +56,7 @@ final class PageStatusViews {
     }
 
     func render(_ state: BrowserTabState) {
-        if let exit = state.processExit {
+        if let exit = state.processExit, !exit.engineShowsPage {
             goneView.show(exit)
         } else if !goneView.isHidden {
             goneView.isHidden = true

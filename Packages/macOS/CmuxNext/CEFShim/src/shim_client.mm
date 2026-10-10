@@ -165,8 +165,8 @@ class Client : public CefClient,
 
   // MARK: Renderer process failures
 
-  // The host shows its own "sad tab" in the pane and reloads from it; Chrome
-  // style would otherwise draw Chromium's Aw, Snap! page in the page window.
+  // Chrome style draws Chromium's Aw, Snap! page in the page window; the host
+  // records the exit and reloads a hidden tab when it is shown.
   void OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser, TerminationStatus status, int error_code,
                                  const CefString& error_string) override {
     int id = browser->GetIdentifier();
