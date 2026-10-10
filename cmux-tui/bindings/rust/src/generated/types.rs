@@ -1,5 +1,5 @@
 // This file is generated. Do not edit by hand.
-// cmux-tui mux protocol 12, IR e2aa9bda6ce2b99b533ab691a7df02cfab75c8fff586a74f4e6166bafa13d388.
+// cmux-tui mux protocol 12, IR 2e8055fc4e030d9ff944695aeb864330b4d262b3e812ed42b60e5a331649ca62.
 // The emitter owns this layout so generation is independent of the installed rustfmt.
 
 use crate::{Nullable, Optional};
@@ -1530,6 +1530,8 @@ pub struct SetTerminalIdlePolicyResult {
 pub struct SetTerminalKeepResult {
     pub keep: bool,
     pub terminal_id: String,
+    #[serde(default, skip_serializing_if = "Optional::is_missing")]
+    pub terminal_resource_id: Optional<String>,
 }
 
 #[rustfmt::skip]
@@ -2304,6 +2306,8 @@ pub struct TerminalPlacement {
     pub surface: Nullable<Id>,
     pub terminal_id: String,
     pub terminal_incarnation: Nullable<String>,
+    #[serde(default, deserialize_with = "crate::presence::deserialize_optional_non_null", skip_serializing_if = "Option::is_none")]
+    pub terminal_resource_id: Option<String>,
     pub terminal_revision: u64,
     pub workspace: Nullable<Id>,
 }
