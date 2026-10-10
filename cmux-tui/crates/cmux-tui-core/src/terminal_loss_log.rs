@@ -362,6 +362,7 @@ mod tests {
         let _ = fs::remove_dir_all(root);
     }
 
+    #[cfg(unix)]
     #[test]
     fn a_host_replacement_is_logged_as_its_own_event_and_removes_breadcrumbs() {
         let root = temp_root("replaced");
