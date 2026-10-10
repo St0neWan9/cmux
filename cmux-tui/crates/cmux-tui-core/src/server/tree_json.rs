@@ -180,6 +180,8 @@ pub(super) fn pane_json(
                 "end": end,
             });
             raw_tab::merge_browser_fields(&mut tab, surface, frontend_browser, conversation);
+            let remote = content_resource_id.and_then(|id| notifications.presentation.remote_terminals.get(id));
+            super::remote_terminal_tabs_wire::apply(&mut tab, remote);
             tab
         }).collect::<Vec<_>>(),
     })
