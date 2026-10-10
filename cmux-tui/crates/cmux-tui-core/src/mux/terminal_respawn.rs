@@ -25,18 +25,18 @@
 //! (`terminal_respawn/prefill.rs`): an agent resume command or the terminal's
 //! command line is typed on the new prompt without a newline.
 
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 pub(super) mod launch;
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 mod prefill;
 mod supervisor;
 
 use std::time::{Duration, Instant};
 
 use super::*;
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 use crate::terminal_host_protocol::TerminalExit;
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 use crate::terminal_loss_log::Prefilled;
 
 pub(crate) use supervisor::RespawnGuard;
@@ -156,7 +156,7 @@ impl TerminalRespawns {
 }
 
 /// One respawn, decided by [`Mux::schedule_terminal_respawn`].
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 pub(super) struct RespawnPlan {
     pub(super) terminal_id: String,
     pub(super) public_id: TerminalPublicId,
@@ -179,7 +179,7 @@ impl Mux {
     /// placed and the loss qualifies, take its dead runtime out of the tabs,
     /// mark it respawning and start the respawn worker. Never fails the exit
     /// commit; a refused respawn leaves the tab dead.
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     pub(super) fn schedule_terminal_respawn(
         &self,
         terminal_id: &str,
@@ -202,7 +202,7 @@ impl Mux {
         }
     }
 
-    #[cfg(not(unix))]
+    #[cfg(not(any(unix, windows)))]
     pub(super) fn schedule_terminal_respawn(
         &self,
         _terminal_id: &str,
@@ -211,7 +211,7 @@ impl Mux {
     ) {
     }
 
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     fn respawn_enabled(&self) -> bool {
         !self.terminal_respawns.disabled
             && !self.shutting_down.load(Ordering::Acquire)
@@ -219,7 +219,7 @@ impl Mux {
             && self.terminal_host_root().is_some()
     }
 
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     fn plan_terminal_respawn(
         &self,
         terminal_id: &str,
@@ -302,7 +302,7 @@ impl Mux {
 
     /// The respawn worker: respawn, then pre-fill; on failure or a refused
     /// respawn the tab shows the terminal ended.
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     fn run_terminal_respawn(self: &Arc<Self>, plan: RespawnPlan) {
         let terminal_id = plan.terminal_id.clone();
         let public_id = plan.public_id.clone();
@@ -355,7 +355,7 @@ impl Mux {
         }
     }
 
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     fn terminal_host_root(&self) -> Option<std::path::PathBuf> {
         let options = self.surface_options.lock().unwrap_or_else(PoisonError::into_inner);
         options.terminal_host_root.clone()
@@ -363,7 +363,7 @@ impl Mux {
 
     /// Reopen the row, launch the new host and put it in the tabs. `None`
     /// when a close or another end won, or the owner is shutting down.
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     fn respawn_terminal(
         self: &Arc<Self>,
         mut plan: RespawnPlan,
@@ -441,7 +441,7 @@ impl Mux {
     /// Put the new runtime in the terminal's tabs and commit the new
     /// incarnation in one registry + state critical section. False when a
     /// close won.
-    #[cfg(unix)]
+    #[cfg(any(unix, windows))]
     fn install_respawned_runtime(
         &self,
         plan: &RespawnPlan,
@@ -500,7 +500,7 @@ impl Mux {
 /// Remove the dead host records of `terminal_id` under `root`, so the new
 /// host can publish its own. A live record is left alone (the launch then
 /// fails and the loss stands).
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 fn remove_dead_host_records(root: &Path, terminal_id: &str) {
     let Ok(records) = crate::terminal_host_runtime::load_terminal_host_records(root) else {
         return;

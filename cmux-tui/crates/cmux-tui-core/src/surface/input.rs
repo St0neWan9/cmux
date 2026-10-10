@@ -17,12 +17,12 @@ impl Surface {
                 writer.write_all(bytes)?;
                 writer.flush()
             }
-            #[cfg(unix)]
+            #[cfg(any(unix, windows))]
             PtyRuntime::Hosted(host) => host.send(MessageKind::Input, bytes),
             // A keep-on-exit terminal outlives its child, so typing into the
             // dead PTY is an expected interaction: drop the bytes silently
             // instead of failing every keystroke on the final screen.
-            #[cfg(unix)]
+            #[cfg(any(unix, windows))]
             PtyRuntime::ExitedHosted => Ok(()),
         }
     }
@@ -46,7 +46,7 @@ impl Surface {
                 .write_all(bytes)
                 .and_then(|()| writer.flush())
                 .map_err(ConfirmedInputFailure::Indeterminate),
-            #[cfg(unix)]
+            #[cfg(any(unix, windows))]
             PtyRuntime::Hosted(host) => {
                 let receipt = host.begin_input_confirmed(bytes)?;
                 drop(runtime);
@@ -57,7 +57,7 @@ impl Surface {
             // with a known error instead of claiming the bytes arrived.
             // Unreceipted keystrokes to the final screen stay a silent no-op
             // (`write_bytes`).
-            #[cfg(unix)]
+            #[cfg(any(unix, windows))]
             PtyRuntime::ExitedHosted => Err(ConfirmedInputFailure::Known(std::io::Error::new(
                 std::io::ErrorKind::NotConnected,
                 "terminal has no live PTY owner for receipted input",
@@ -95,7 +95,7 @@ impl Surface {
         if bytes.is_empty() {
             return Ok(());
         }
-        #[cfg(unix)]
+        #[cfg(any(unix, windows))]
         {
             let runtime = pty.runtime.lock().unwrap();
             if let PtyRuntime::Hosted(host) = &*runtime {
