@@ -32,6 +32,8 @@ use crate::terminal_host_runtime::TerminalHostLiveness;
 pub use open_guard::RegistryQuarantined;
 use open_guard::preflight_unsupported_schema;
 
+mod detached_terminals;
+pub(crate) use detached_terminals::DETACHED_TERMINAL_WORKSPACE_KEY;
 mod effect_store;
 pub(crate) mod feed_local_store;
 mod idle_policy_store;
@@ -3083,6 +3085,7 @@ impl WorkspaceRegistry {
                 result_json,
             ],
         )?;
+        detached_terminals::keep_reserved_detached(&tx, existing.as_ref(), terminal)?;
         tx.commit()?;
         Ok(TerminalRegistryCommit { revision, result: result.clone(), replayed: false })
     }
@@ -4826,6 +4829,10 @@ fn validate_terminal_transition(
 }
 
 fn require_live_workspace(connection: &Connection, workspace_key: &str) -> anyhow::Result<()> {
+    // A detached terminal names no workspace; its sentinel key needs none.
+    if workspace_key == DETACHED_TERMINAL_WORKSPACE_KEY {
+        return Ok(());
+    }
     let live = connection
         .query_row(
             "SELECT 1 FROM workspaces WHERE workspace_key = ?1 AND tombstoned = 0",
