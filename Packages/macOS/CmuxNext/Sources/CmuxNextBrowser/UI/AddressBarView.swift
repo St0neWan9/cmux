@@ -217,6 +217,10 @@ public final class AddressBarView: NSView {
         fieldToBadge.isActive = visible
     }
 
+    /// Shows the page's URL again after a commit that loaded nothing in
+    /// this tab (`chrome://settings` opened Settings instead).
+    public func showPageURL() { controller.send(.pageURLChanged(reportedURL)) }
+
     /// Shows the page's URL. While editing, typed text never changes.
     public func update(url: URL?, security: BrowserSecurityState) {
         if url != reportedURL {
