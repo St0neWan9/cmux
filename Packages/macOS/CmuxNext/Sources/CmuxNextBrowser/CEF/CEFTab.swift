@@ -220,8 +220,9 @@ public final class CEFTab: BrowserTab, BrowserOcclusionHosting, BrowserExtension
         }
     }
 
-    /// The renderer ended (crash, kill, out of memory, launch failure). The
-    /// pane shows the sad tab; a hidden tab reloads when it is shown.
+    /// The renderer ended (crash, kill, out of memory, launch failure).
+    /// Chromium shows its own sad tab ("Aw, Snap!"); a hidden tab reloads
+    /// when it is shown, as in Chrome.
     func rendererTerminated(_ exit: BrowserProcessExit) {
         guard !isClosed else { return }
         machine.apply(.processExited(exit))
