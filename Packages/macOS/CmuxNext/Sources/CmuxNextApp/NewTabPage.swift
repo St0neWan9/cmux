@@ -374,9 +374,14 @@ extension NewTabPage {
             services.newTabKinds.record(.browser(engine: nil), folder: cwd)
             let resolver = services.cache.suggestionEngine.resolver
             let text = request.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            let url = request.search
+            var url = request.search
                 ? resolver.searchEngine.searchURL(for: text)
                 : ChromiumInternalURL(typed: text)?.url ?? resolver.commitTypoFix(for: text) ?? resolver.destination(for: request.text)?.url
+            // chrome://history is cmux's page; chrome://settings opens Settings and leaves nothing to load.
+            if let typed = url {
+                guard let routed = services.routedChromiumPage(typed) else { return pane.close([StripTabID(key)]) }
+                url = routed
+            }
             let engine = BrowserEngineTag.engine(for: url)
             // A session-local browser tab is made and selected right away.
             if services.cache.browserTabs.isAvailable(in: pane.pane) {
